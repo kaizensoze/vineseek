@@ -1,0 +1,20 @@
+
+table {
+  border-collapse: collapse !important;
+  border-spacing: 0 !important;
+}
+
+video {
+  width: 100%;
+  height: auto;
+}
+
+#loading {
+  display: inline-block;
+  width: 22px;
+  height: 22px;
+  background: url(../img/loading.gif) no-repeat top left;
+  background-size: 22px 22px;
+  vertical-align: middle;
+  visibility: hidden;
+}

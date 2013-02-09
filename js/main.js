@@ -29,9 +29,15 @@ $("document").ready(function() {
             var searchTerm = $("#search-term").val();
             searchURL = twitterSearchURL.replace("<SEARCHTERM>", encodeURIComponent(searchTerm));
         }
+
         $.ajax({
             url: searchURL,
+            async: false,
             dataType: "jsonp",
+            beforeSend: function(xhr) {
+                $("#loading").css('visibility', 'visible');
+                $('#videoTable tr').remove();
+            },
             success: function(data) {
                 var vinesOnPage = data['results_per_page'];
                 var results = data['results'];
@@ -54,6 +60,9 @@ $("document").ready(function() {
                 if (typeof nextURL !== "undefined") {
                     search(nextURL);
                 }
+            },
+            complete: function(xhr, status) {
+                $("#loading").css('visibility', 'hidden');
             }
         });
     }
@@ -62,6 +71,7 @@ $("document").ready(function() {
         var proxyURL = "http://localhost:8080/getvine?vineURL=" + encodeURIComponent(vineURL);
         $.ajax({
             url: proxyURL,
+            async: false,
             dataType: "jsonp",
             success: function(data) {
                 var vineHTML = data.html;
@@ -69,8 +79,25 @@ $("document").ready(function() {
                 var vineVideo = vineObj.find('video')[0];
                 var vineVideoSrc = $(vineVideo).find('source').attr('src');
                 vines.push(vineVideoSrc);
-                console.log(vineVideoSrc);
+                // console.log(vineVideoSrc);
+
+                var videoIndex = vines.indexOf(vineVideoSrc);
+
+                addVideoToTable(vineVideoSrc, videoIndex);
             }
         });
+    }
+
+    function addVideoToTable(videoSrc, videoIndex) {
+        var videoHTML = "";
+        videoHTML += '<video autoplay loop>';
+        videoHTML += '<source src="'+videoSrc+'"  type="video/mp4" />';
+        videoHTML += '</video>';
+        // videoHTML = 'blah';
+
+        if (videoIndex % 3 == 1) {
+            $('#videoTable').append('<tr></tr>');
+        }
+        $('#videoTable tr:last').append('<td>'+videoHTML+'</td>');
     }
 });
