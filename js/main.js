@@ -5,19 +5,29 @@ var nextURL;
 
 var vines = [];
 
+var initialSearch;
+var requestCap;
+var requests = 0;
+
 $("document").ready(function() {
     $("#search-term").focus();
 
-    $("#search-term").keydown(function(e) {
+    $("#search-term,#num-vines").keydown(function(e) {
         var code = (e.keyCode ? e.keyCode : e.which);
         if (code == 13) {
-            search();
+            initSearch();
         }
     });
 
     $("#search").click(function() {
-        search();
+        initSearch();
     });
+
+    function initSearch() {
+        initialSearch = true;
+        requestCap = $('#num-vines').val() || 20;
+        search();
+    }
 
     function search(_nextURL) {
         // console.log("search: "+_nextURL);
@@ -30,15 +40,23 @@ $("document").ready(function() {
             searchURL = twitterSearchURL.replace("<SEARCHTERM>", encodeURIComponent(searchTerm));
         }
 
+        // console.log(searchURL);
+
         $.ajax({
             url: searchURL,
             async: false,
             dataType: "jsonp",
             beforeSend: function(xhr) {
                 $("#loading").css('visibility', 'visible');
-                $('#videoTable tr').remove();
+                if (initialSearch) {
+                    $('#videoTable tr').remove();
+                    requests = 0;
+                }
+                initialSearch = false;
             },
             success: function(data) {
+                $("#loading").css('visibility', 'hidden');
+
                 var vinesOnPage = data['results_per_page'];
                 var results = data['results'];
                 var next = data['next_page'];
@@ -52,23 +70,28 @@ $("document").ready(function() {
                 $.each(results, function(idx, result) {
                     var tweetText = result['text'];
                     var vineURLPattern = /http:\/\/t\.co\/.*/g;
-                    var vineURLMatch = tweetText.match(vineURLPattern)[0];
-                    getVineVideoSrc(vineURLMatch);
+                    var vineURLMatches = tweetText.match(vineURLPattern);
+                    if (vineURLMatches.length > 0) {
+                        getVineVideoSrc(vineURLMatches[0]);
+                        requests++;
+                    }
                 });
 
                 // Get next set of vines.
-                if (typeof nextURL !== "undefined") {
+                if (typeof nextURL !== "undefined" && requests < requestCap) {
                     search(nextURL);
                 }
-            },
-            complete: function(xhr, status) {
-                $("#loading").css('visibility', 'hidden');
             }
         });
     }
 
     function getVineVideoSrc(vineURL) {
+        if (requests >= requestCap) {
+            return;
+        }
+
         var proxyURL = "http://localhost:8080/getvine?vineURL=" + encodeURIComponent(vineURL);
+
         $.ajax({
             url: proxyURL,
             async: false,
@@ -79,7 +102,6 @@ $("document").ready(function() {
                 var vineVideo = vineObj.find('video')[0];
                 var vineVideoSrc = $(vineVideo).find('source').attr('src');
                 vines.push(vineVideoSrc);
-                // console.log(vineVideoSrc);
 
                 var videoIndex = vines.indexOf(vineVideoSrc);
 
@@ -93,9 +115,8 @@ $("document").ready(function() {
         videoHTML += '<video autoplay loop>';
         videoHTML += '<source src="'+videoSrc+'"  type="video/mp4" />';
         videoHTML += '</video>';
-        // videoHTML = 'blah';
 
-        if (videoIndex % 3 == 1) {
+        if (videoIndex % 4 == 0) {
             $('#videoTable').append('<tr></tr>');
         }
         $('#videoTable tr:last').append('<td>'+videoHTML+'</td>');
