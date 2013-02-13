@@ -90,14 +90,14 @@ $("document").ready(function() {
             return;
         }
 
-        var proxyURL = "http://localhost:8080/getvine?vineURL=" + encodeURIComponent(vineURL);
+        var proxyURL = "run.php?action=getvine&vineurl=" + encodeURIComponent(vineURL);
 
         $.ajax({
             url: proxyURL,
             async: false,
             dataType: "jsonp",
             success: function(data) {
-                var vineHTML = data.html;
+                var vineHTML = decodeURIComponent(data.html);
                 var vineObj = $(vineHTML);
                 var vineVideo = vineObj.find('video')[0];
                 var vineVideoSrc = $(vineVideo).find('source').attr('src');

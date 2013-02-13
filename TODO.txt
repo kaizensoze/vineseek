@@ -1,7 +1,6 @@
 
-setup vineseek.in on linode
-get bottle server running on linode
+convert run.py to php
 setup memcached on linode
-get memcached working with bottle
+get memcached working with php code
 
 http://search.twitter.com/search.json?q=%23TouchdownOnBourbonSt%20%22vine.co%22%20-filter%3Aretweets
