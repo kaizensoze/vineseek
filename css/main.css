@@ -1,4 +1,11 @@
 
+a {
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
 table {
   border-collapse: collapse !important;
   border-spacing: 0 !important;
@@ -7,6 +14,12 @@ table {
 video {
   width: 100%;
   height: auto;
+}
+
+#disclaimer {
+  position: absolute;
+  right: 10px;
+  top: 0px;
 }
 
 #loading {
