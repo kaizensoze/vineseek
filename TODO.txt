@@ -1,5 +1,4 @@
 
-convert run.py to php
 setup memcached on linode
 get memcached working with php code
 
