@@ -112,8 +112,6 @@ $("document").ready(function() {
     }
 
     function addVideoToTable(videoSrc, videoType, videoIndex) {
-        console.log(videoType);
-        
         var videoHTML = "";
         videoHTML += '<video autoplay loop>';
         videoHTML += '<source src="'+videoSrc+'"  type="'+videoType+'" />';
