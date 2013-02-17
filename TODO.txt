@@ -1,5 +1,7 @@
 
-setup memcached on linode
-get memcached working with php code
+use express.js
+use redis
+get videos showing in all browsers
+use bootstrap
 
 http://search.twitter.com/search.json?q=%23TouchdownOnBourbonSt%20%22vine.co%22%20-filter%3Aretweets

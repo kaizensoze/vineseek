@@ -9,6 +9,7 @@ var initialSearch;
 var requestCap;
 var requests = 0;
 
+
 $("document").ready(function() {
     $("#search-term").focus();
 
@@ -101,20 +102,19 @@ $("document").ready(function() {
                 var vineObj = $(vineHTML);
                 var vineVideo = vineObj.find('video')[0];
                 var vineVideoSrc = $(vineVideo).find('source').attr('src');
-                var vineVideoType = $(vineVideo).find('source').attr('type');
                 vines.push(vineVideoSrc);
 
                 var videoIndex = vines.indexOf(vineVideoSrc);
 
-                addVideoToTable(vineVideoSrc, vineVideoType, videoIndex);
+                addVideoToTable(vineVideoSrc, videoIndex);
             }
         });
     }
 
-    function addVideoToTable(videoSrc, videoType, videoIndex) {
+    function addVideoToTable(videoSrc, videoIndex) {
         var videoHTML = "";
-        videoHTML += '<video autoplay loop>';
-        videoHTML += '<source src="'+videoSrc+'"  type="'+videoType+'" />';
+        videoHTML += '<video class="video-js" autoplay loop data-setup="{}">';
+        videoHTML += '<source src="'+videoSrc+'" type="video/mp4" />';
         videoHTML += '</video>';
 
         if (videoIndex % 4 == 0) {
